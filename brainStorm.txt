@@ -1,0 +1,17 @@
+Ideas for boot led ADUC.
+
+2 Modes
+    User Modes
+    Search Users in domain and perform common tasks
+        Unlock 
+        Password Reset
+        Move to correct OU
+        Pull User details
+
+    Computer Mode
+    Search computers in domain and perfrom common tasks
+        Select OU
+        Move computers
+        Apply GPO
+        Logged in Users
+        
