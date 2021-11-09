@@ -1,7 +1,6 @@
 Ideas for boot led ADUC.
 
-2 Modes
-    User Modes
+    User Mode
     Search Users in domain and perform common tasks
         Unlock 
         Password Reset
@@ -11,7 +10,10 @@ Ideas for boot led ADUC.
     Computer Mode
     Search computers in domain and perfrom common tasks
         Select OU
-        Move computers
+        Move computer
         Apply GPO
+        Add admin groups
         Logged in Users
+
+Automate ticket creation/resolution for certain tasks
         
