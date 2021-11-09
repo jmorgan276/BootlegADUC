@@ -1,24 +1,31 @@
-# simple functions to perform simplified wildcard searches for resources in Active Directory.
-# Some, if not all of the follwoing commands and functions will be used to eventually build a
-# "technician's dashboard" that will allow them to perform commonly used tasks and searches in 
-# Active Directory
+<#
+Work in progress. 
 
-## defines the remoteUser object.  Whenever it is created it will contain the properties liseted below.
+simple functions to perform simplified wildcard searches for resources in Active Directory.
+Some, if not all of the follwoing commands and functions will be used to eventually build a
+"technician's dashboard" that will allow them to perform commonly used tasks and searches in 
+Active Directory
+#>
+
+## defines the remoteUser object.  
 class remoteUser {
 
+    # boolean values used to determine if user has access to remoteapp and/or vpn
     [bool]$remoteAppUser
     [bool]$vpnUser
 
 }
 
-# Array containing properties to use when using Get-ADuser
+
+
+# splats used for fomratting inputs & outputs for "find-aduser" function 
 $queryProperties = @{ 
 
     Properties = "DisplayName", "SamAccountName", "Department", "Description", "LockedOut", "PasswordExpired", "EmployeeID", "MemberOf"  
 
 }
 
-$userQueries = @{
+$userProperties = @{
 
     Property = "CN", "DisplayName", "Description", "EmailAddress", "EmployeeID", "PhysicalDeliveryOfficeName", "StreetAddress", "Title", "TelephoneNumber", "LockedOut", "PasswordExpired", "MemberOf"
 
@@ -38,8 +45,8 @@ Custom function that is used to find an AD user object using search methods less
 the "Get-ADUser" cmdlet. 
 
 .DESCRIPTION
-Find-ADUser works similar to Get-ADUser, the main difference is that it is more friendly to wildcard searches. 
-The only parameter is the -Name Parameter, and is able to accept a variety of search criteria using ANR.
+Find-ADUser works similar to Get-ADUser, the main difference is that it supports wildcard searches. 
+Currently, the only parameter is the -Name Parameter, and is able to accept a variety of search criteria using ANR.
 Ambigious Name Resolution (ANR) is used to search mulitple properties (See the link below for supported attributes.)  
 https://social.technet.microsoft.com/wiki/contents/articles/22653.active-directory-ambiguous-name-resolution.aspx
 
@@ -88,7 +95,7 @@ function Find-ADuser {
     )
 
     #Runs Get-ADUser command using LDAP filter and performs an ANR query for the $Name parameter. Assigns results to $returnUser variable.
-    $returnUser = Get-ADUser -LDAPFilter "(anr=$Name)" @queryProperties
+    $returnUser = Get-ADUser -LDAPFilter "(anr=$Name)" @userProperties
 
     # if above search returns nothing then retry command using a filter that will search employeeID properties.
     if ( $returnUser.count -eq 0 ) {
@@ -97,7 +104,7 @@ function Find-ADuser {
         $Name = "'*" + $Name + "*'"
 
         #Runs Get-ADUser command but only searches EmployeeID properties for users.
-        $returnUser = Get-ADUser -Filter "EmployeeID -like $Name" @queryProperties
+        $returnUser = Get-ADUser -Filter "EmployeeID -like $Name" @userProperties
 
     }
 
@@ -105,6 +112,23 @@ function Find-ADuser {
     return $returnUser 
 }
 
+
+# protype function that uses unlock-aduser and allows simple "unlock" alias to be used
+function Unlock-User {
+    
+    [alias ("Unlock")]
+
+    param(
+        [Parameter()]
+        $Name
+    )
+
+    Unlock-ADAccount -Identity $Name
+
+}
+
+# function inspects specified users group memberships and to determine if they are members of any groups 
+# that allow remote access
 
 function Get-RemoteStatus {
 
@@ -119,7 +143,6 @@ function Get-RemoteStatus {
 
     # for each group that a user is a member of "vpn" or "remoteApp" type groups if so, then the 
     # corresponding "user" property will be set to True, if not it will remain the default value (False)
-    
     # iterates user's group membership and checks if it's a vpn or remoteapp group
 
     foreach ($var in $Name.MemberOf) {
