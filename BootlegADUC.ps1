@@ -7,7 +7,7 @@ Some, if not all of the follwoing commands and functions will be used to eventua
 Active Directory
 #>
 
-## defines the remoteUser object.  
+## defines the remoteUser object. Provides at a glance results for user's remote access memberships.
 class remoteUser {
 
     # boolean values used to determine if user has access to remoteapp and/or vpn
@@ -58,7 +58,7 @@ All search terms are considered wildcard searches.
 Find-ADUser -Name "[searchterm]" 
 -Name is the only parameter and used by default.
 
-As long as a single string is used, search term can be entered without quotes. 
+As long as a single string with no spaces is used, any search term can be entered without quotes. 
 
 Last Name ->   PS C:\ Find-ADuser morgan
 First Name ->  PS C:\ Find-ADuser justin
@@ -127,9 +127,27 @@ function Unlock-User {
 
 }
 
-# function inspects specified users group memberships and to determine if they are members of any groups 
-# that allow remote access
 
+
+
+<#
+.SYNOPSIS
+function inspects specified users group memberships and to determine if they are members of any groups 
+that allow remote access
+
+.DESCRIPTION
+Function needs an existing ADuser object that contains the MemberOf propterty. It will then check group memberships to see if the user is a member of any
+VPN or RemoteApp groups.
+
+.PARAMETER Name
+Parameter description
+
+.EXAMPLE
+An example
+
+.NOTES
+function is meant to be used as part of a future dashboard. 
+#>
 function Get-RemoteStatus {
 
     # Parameter "$Name" will be used by default if parameter is not used in the command 
