@@ -16,14 +16,16 @@ class remoteUser {
 
 }
 
+# list containing properties to reutn in find-aduser function
 
-
-# splats used for fomratting inputs & outputs for "find-aduser" function 
+ 
 $queryProperties = @{ 
 
     Properties = "DisplayName", "SamAccountName", "Department", "Description", "LockedOut", "PasswordExpired", "EmployeeID", "MemberOf"  
 
 }
+
+# example splats used for fomratting inputs & outputs for "find-aduser" function
 
 $userProperties = @{
 
